@@ -1,0 +1,18 @@
+{
+  "name": "wiki_engine",
+  "version": "1.0.0",
+  "description": "간단한 기능이 탑재된 Node.js Express 위키 엔진",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "marked": "^12.0.2",
+    "sqlite3": "^5.1.7"
+  }
+}
