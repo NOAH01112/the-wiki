@@ -1,5 +1,3 @@
-// server.js
-
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
@@ -10,6 +8,13 @@ app.use(express.static('public'));
 
 // 데이터베이스 연결
 const db = new sqlite3.Database('wikidata.db');
+
+// documents 테이블 생성
+db.run(`CREATE TABLE IF NOT EXISTS documents (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT,
+  content TEXT
+)`);
 
 // 문서 목록 템플릿 함수
 function generateDocumentList(rows) {
