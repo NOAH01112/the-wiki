@@ -125,7 +125,8 @@ app.get('/wiki/:id/edit', (req, res) => {
       <form action="/wiki/${documentId}/edit" method="post">
         <div>
           <label for="title">제목:</label>
-          <input type="text" id="title" name="title" value="${row.title}" required>
+          <!-- 제목 입력 필드를 비활성화 -->
+          <input type="text" id="title" name="title" value="${row.title}" required disabled>
         </div>
         <div>
           <label for="content">내용:</label>
@@ -142,8 +143,8 @@ app.post('/wiki/:id/edit', (req, res) => {
   const documentId = req.params.id;
   const { title, content } = req.body;
   // 해당 문서를 데이터베이스에서 업데이트
-  const sql = 'UPDATE documents SET title = ?, content = ? WHERE id = ?';
-  db.run(sql, [title, content, documentId], function(err) {
+  const sql = 'UPDATE documents SET content = ? WHERE id = ?';
+  db.run(sql, [content, documentId], function(err) {
     if (err) {
       console.error(err.message);
       return res.status(500).send('문서 편집 중 오류가 발생했습니다.');
