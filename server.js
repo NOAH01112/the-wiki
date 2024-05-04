@@ -2,8 +2,9 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 const app = express();
-const port = 3000;
+const config = require('./config.json');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -30,20 +31,6 @@ db.run(`CREATE TABLE IF NOT EXISTS documents (
   content TEXT,
   author TEXT
 )`);
-
-// 문서 목록 템플릿 함수
-function generateDocumentList(rows, req) {
-  let documentList = '';
-  rows.forEach(row => {
-    documentList += `
-      <li>
-        <a href="/wiki/${row.id}">${row.title}</a>
-        ${req.session.username === row.author ? `<a href="/wiki/${row.id}/edit">(편집)</a> | <a href="/wiki/${row.id}/delete">(삭제)</a>` : ''}
-      </li>
-    `;
-  });
-  return documentList;
-}
 
 // 회원 가입 페이지 라우트
 app.get('/register', (req, res) => {
@@ -161,7 +148,7 @@ app.get('/', (req, res) => {
       <ul>
         ${generateDocumentList(rows, req)}
       </ul>
-      <p><a href="/create">새 문서 생성하기</a></p>
+      <p><a href="/create">새 문서 생성</a></p>
       <p><a href="/logout">로그아웃</a></p>
     `);
   });
@@ -310,7 +297,25 @@ app.get('/wiki/:id/delete', (req, res) => {
   });
 });
 
+// 포트 설정
+const port = config.port || 3000;
+
 // 서버 시작
 app.listen(port, () => {
   console.log(`서버가 http://localhost:${port} 에서 실행 중입니다`);
 });
+
+// 문서 목록 생성 함수
+function generateDocumentList(rows, req) {
+  let documentList = '';
+  rows.forEach(row => {
+    documentList += `
+      <li>${row.title} 
+        <a href="/wiki/${row.id}">보기</a> 
+        <a href="/wiki/${row.id}/edit">편집</a> 
+        <a href="/wiki/${row.id}/delete">삭제</a>
+      </li>
+    `;
+  });
+  return documentList;
+}
